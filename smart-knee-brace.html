@@ -1,2 +1,89 @@
 
-<p> test </p>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Smart Knee Brace</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /> 
+</head>
+
+
+<body>
+
+	<div>
+		<h1>The Team</h1>
+		Team Lead: Nick Pavlosky<br>
+		Hardware: Annette Park, Anushka Narasani, Shannon Li, Noor Saiedy<br>
+		Circuitry: Martin Bourdev, Amanda Weckerly <br>
+		Software: Amy Li, Jacob Sandler
+	</div>
+	<hr>
+
+	<div>
+		<h1>Motivation and Overview</h1>
+		<p>Diagnosis and monitoring of knee pathologies through measurement of knee flexion/extension.</p>
+
+		<h1>Features</h1>
+		<ul>
+			<li>Lightweight integrated circuitry.</li>
+			<li>Live sensor data feed via Bluetooth LE.</li>
+			<li>Companion web app that can guide user through stretches.</li>
+			<li>Measure your knee flexion angle in real time!</li>
+		</ul><br>
+		<img src='images/knee1.png' width='400'><br>
+	</div>
+	<hr>
+
+	<div>
+		<h1>Hardware</h1>
+
+		<p>Assembly</p>
+		<ol>
+			<li>Prepared brace through modifications. Seam-ripped side channels for metal joints to use as pocket for circuitry.</li>
+			<li>Replace circuitry connections by soldering components.</li>
+			<li>Secure stretch sensor with ring  terminal connector.</li>
+			<li>Sew components to their respective position.</li>
+		</ol>
+		<img src='images/knee2.png' width='400'><br>
+	</div>
+	<hr>
+
+	<div>
+		<h1>Circuitry</h1>
+
+		<p>Design</p>
+		<ul>
+			<li>Stretch sensor over the knee changes resistance with respect to its length, causing the voltage value to change with length.</li>
+			<li>Use a voltage divider to measure the voltage between the stretch sensor and 3.3kΩ resistor</li>
+			<li>This voltage value is sent to the adafruit flora wearable electronic, then to the bluetooth chip and computer program that analyzes the change in voltage</li>
+		</ul>
+		<p>Illustrations by Amanda Weckerly.</p>
+		<img src='images/knee3.jpeg' width='500'>
+		<img src='images/knee4.png' width='300'><br>
+	</div>
+	<hr>
+
+	<div>
+		<h1>Software</h1>
+		<p>Features</p>
+		<ol>
+			<li>Dropdown menu to select injury</li>
+			<li>Bluetooth connection to get stretch sensor values</li>
+			<li>Personalized calibration for min and max values</li>
+			<li>Guided recovery stretches with video references</li>
+			<li>Gauge with stretch percentage</li>
+			<li>Display gauge with target indicator</li>
+			<li>Timer countdown</li>
+		</ol>
+		<img src='images/knee5.png' width='600'><br>
+		<img src='images/knee6.png' width='600'><br>
+	</div>
+
+</body>	
+
+
+
+
+
+
