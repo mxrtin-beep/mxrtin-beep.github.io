@@ -1,0 +1,214 @@
+
+
+<head>
+	<meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>My Website</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /> 
+</head>
+
+
+<body>
+	<h1>ThetaFlow: Measuring Cognitive Load using EEG</h1><br>
+
+
+	<a href='https://github.com/mxrtin-beep/CruX-Team-13' target="_blank">GitHub</a><br>
+	<a href='https://docs.google.com/presentation/d/1uH1Ez6pVgxpo_OkXc-Xafyq5h3t7djtjP50N2vehUqM/edit?usp=sharing' target='_blank'>Presentation</a><br>
+
+	<div>
+		<h1> The Team </h1>
+		Team Lead: Martin Bourdev<br>
+		GUI: Daniel Bielin, Kylie Bach <br>
+		Data Collection: Amanda Dankberg, Akshyae Singh <br>
+		Data Analysis: Adelyne Tran, Kyra Sunil
+	</div><hr>
+
+	<div>
+		<h1> Background </h1>
+		<p>The Nielsen Norman Group, a leader in UX research, has <a href='https://www.nngroup.com/articles/minimize-cognitive-load/' target='_blank'>found</a> that intuitive and easy user experience is the cornerstone of any product or service. But you already knew that any time you tried to open a door the wrong way, or when a website bombarded you with ads, or when a page took so long to load that you clicked away. When design fails, users must tap into their limited processing power and take on cognitive load, leading to disorganization, discouragement, and poor user experience. We aim to use EEG signals to objectively measure and quantify the cognitive load experienced by a user to test and improve the usability of products and services.</p><br>
+		<p>
+			<ul>
+
+				<li>Good product design demands as little cognitive effort from the user as possible.</li>
+				<li>Poor design characteristics, such as long load times, clutter, unintuitive functionality, hidden information, poor feedback, and clashing colors can cause cognitive strain and turn users away from products.</li>
+				<li>Google Data <a href='https://www.thinkwithgoogle.com/consumer-insights/consumer-trends/mobile-site-load-time-statistics/' target="_blank">study</a> from 2016 shows that over half of visits to a mobile site are abandoned if the loading time is greater than three seconds, a 32% increase in abandonment from a one-second load time. As load time increases to six seconds, the chance of abandonment doubles, a 200% increase in abandonment from a one-second load time.</li>
+				<li>ThetaFlow will allow companies to objectively measure cognitive load suffered by users and improve design.</li>
+			</ul>
+		</p>
+	</div><hr>
+
+	<div>
+		<h1> Previous Research </h1>
+
+		<p>ThetaFlow rests on the results of two research groups who attempted to measure cognitive load using EEG.</p><br>
+
+		<h2>Pavlov 2022: Pupillometry and electroencephalography in the digit span task </h2>
+
+		<p>In 2022, the team, led by Yuri G. Pavlov, published a <a href='https://www.nature.com/articles/s41597-022-01414-2' target='_blank'>paper</a> distilling cognitive load to the task of memorizing a sequence of digits. Patients either memorized or simply listened to chains of 5, 9, or 13 digits while wearing a 64-channel EEG headset.</p>
+
+		<p>We focused on one key figure found by the team:</p><br>
+
+		<img src='images/pavlov_data.png' width='300'><br>
+
+		<p>How do you interpret this image? This type of chart depicts the Power Spectral Density (PSD) of a signal. The raw EEG signal will have time in the x-axis and voltage in the y-axis. The signal can be transformed from the time domain to the frequency domain by an algorithm called the Fourier Transform. A Fourier Analysis is very useful, because it reveals how much each frequency contributes to the overall signal. Calculating the spectral power involves dividing your signal into chunks and averaging the squared results of the Fourier Transform. The result is a much smoother and more useful chart, a periodogram.</p>
+		<br><br>
+
+		<p>Below is a visual comparison of the three signals from a Signal Processing Stack Exchange <a href='https://dsp.stackexchange.com/questions/63536/power-spectral-density-vs-fourier-transform' target='_blank'>post</a>. The signal is made of three sine waves with frequencies of 200, 350, and 400 Hz, plus a sine wave with random frequency.</p><br>
+
+		<img src='images/fft.png' width='400'><br>
+
+		<p>Looking back at the image, first notice the larger, solid signals. They are labeled 'control (Pz)' and 'memory (Pz).' Pz refers to the location of the electrode on the head that the signal comes from. Pz is in the middle back of the head. This signal shows a very large spike at about 10 Hz, but crucially, the spike does not differ between control and memory. That means that regardless of whether the subject was memorizing the digits or just listening, the signal showed the exact same spike.</p><br><br>
+
+		<p>The more interesting results to us lie in the smaller dotted line from the Fz electrode, in the middle front of the head. The memory task shows a slight spike at about 6 Hz that is not present in the control. That little spike will allow us to differentiate between cognitive load and rest. The spike lies in the 4-7 Hz frequency range known as the theta frequency. That spike gave us the name 'ThetaFlow.' The large spike from the Pz electrode is at the 8-12 Hz range, known as the alpha frequency range.</p><br><br>
+
+		<p>The team was gracious enough to provide their <a href='https://openneuro.org/datasets/ds003838/versions/1.0.3' target='_blank'>raw data</a> for anyone to use. The team even had the foresight to acknowledge 'The dataset can be used for (1) developing algorithms for cognitive load discrimination and detection of cognitive overload.' That's exactly what it was used for.</p>
+
+		<h2> Wang 2022: A test-retest resting, and cognitive state EEG dataset during multiple subject-driven states</h2>
+
+		<p>In the very same year, a team led by Yulin Wang published a <a href='https://www.nature.com/articles/s41597-022-01607-9' target='_blank'>study</a> testing a wider array of tasks: eyes-closed rest, eyes-open rest, memory, music, and math. From the paper:</p><br><br>
+
+		<p><i>For the memory task, participants were asked to recall the events of the day from when they awoke until they arrived at the lab. For the music task, participants were asked to sing their favourite songs in their head. For the subtraction task, participants were asked to count backwards from 5000 by 7s. Participants were instructed to keep their eyes closed during each of the self-driven cognitive states.</i></p><br><br>
+
+		<p>The team also crucially distinguished between resting with your eyes open and your eyes closed. Pavlov's team had participants close their eyes for rest. Here are the results, with Frequency (Hz) on the x-axis and Absolute power (dB) on the y-axis.</p><br>
+
+		<img src='images/wang-fz.png' width='400'><br>
+		<img src='images/wang-pz.png' width='400'><br>
+
+		<p>What is interesting about these results? Looking at the Fz electrode, there is a spike in theta wave power (4-7 Hz), but only really for the mental math task. The other tasks give the same theta wave power as eyes-closed rest. Perhaps recalling your day's events is less taxing than recalling a specific set of random numbers. This team also found a spike in the alpha waves (8-12 Hz), which was absent from Pavlov's data. However, as expected, there is no difference between tasks except for the eyes-open rest, which Pavlov did not measure. Since our goal is to map these results to real-life user experience, where users would have their eyes open, the difference between eyes-open rest and other tasks could be useful. Looking at the Pz electrode, the team also did not find a theta wave spike and did find the same alpha wave spike for all tasks except eyes-open rest.</p>
+
+		<p>This team was also generous enough to share their hard-earned <a href='https://doi.org/10.18112/OPENNEURO.DS004148.V1.0.1' target='_blank'>data</a>.</p>
+	</div>
+
+	<hr>
+
+	<div>
+		<h1>Data Analysis</h1>
+
+		<p>
+			Now we know that performing very distilled memory or mental math tasks produces a measurable spike in theta waves. However, we should still make sure. Here is the spectral power periodogram we got from Pavlov's data, using Welch's method for calculating it.
+		</p><br>
+		<img src='images/expected_results.png' width='600'><br>
+		<p>
+			This is for one patient using the Fz electrode. We can see a spike in the theta wave range (purple) greater for the memory task than the rest task. Fantastic! We also do see a small spike in the alpha range (red) that is the same for both tasks. This mirrors Pavlov's results well, so we can be confident in our data analysis.
+		</p>
+	</div>
+
+	<hr>
+
+	<div>
+		<h1>Data Collection</h1>
+
+		<p>
+			Now we get some original data. We used a cyton board and an OpenBCI cap with eight electrodes. Using a USB dongle, we streamed the data to the OpenBCI GUI, which applied a bandpass filter from 5 Hz to 50 Hz. Essentially, we filtered out the low-frequency and high frequency data, which is not relevant to our classification. We used FCz as the reference electrode and Fpz as the ground electrode.
+		</p>
+
+		<p>
+			First, we collected data that we were sure would incite cognitive load. We didn't copy Pavlov's or Wang's tasks exactly, but instead used the tests found on the <a href='https://humanbenchmark.com/' target='_blank'>Human Benchmark</a>, which similarly involve memorization and recall. Here are the tasks we performed. Try them yourself!
+			<ul>
+				<li><b>Sequence Memory</b>: Given a three-by-three arrangement of squares, learn and recall an increasingly long sequence of squares.</li>
+				<li><b>Number Memory</b>: Recall increasingly long numbers.</li>
+				<li><b>Verbal Memory</b>: Keep as many words in short-term memory as possible. When given a word, answer if you have seen it before or not.</li>
+				<li><b>Visual Memory</b>: Remember an increasingly large pattern of squares in a grid.</li>
+				<li><b>Chimp Test</b>: Recall the order of an increasingly large set of squares.</li>
+			</ul>
+
+			Thank you to Amanda Dankberg and Adelyne Tran for subjecting themselves to cognitive load for this project. Here is the spectral power plot of Amanda's data in the style of the Wang paper.<br>
+
+			<img src='images/amanda.png'><br>
+
+			<p>
+				Similarly to the Wang data, the eyes open rest had the lowest spectral power of all the tasks. However, it's not clear from this chart what is inciting the most cognitive load. There doesn't seem to be a real 'spike.' We need something more quantitative and decisive. Here, we use the relative power spectral density as opposed to the absolute. The relative PSD is simply the area under the curve from 4 Hz to 7 Hz divided by the area under the entire curve. It reveals the relative contribution of the theta waves to the overall signal.
+			</p>
+
+			<img src='images/amanda_relativepsd.png' width='500'><br>
+			<img src='images/adelyne_relativepsd.png' width='500'><br>
+
+			<p>
+				You can see clearly that the cognitively-demanding tasks had not just larger spectral power magnitudes, but larger contributions from theta waves specifically. Interestingly, the eyes-closed rest, despite appearing to be in the leagues of the rest of the tasks, has a miniscule relative theta power. The reason for that is unclear, but it makes classifying cognitive load more straightforward.
+			</p>
+			<p>
+				Also, there were some tests that yielded a relative theta wave power of over 1.0, which is impossible. The only difference between the numerator and the denominator of the equation is the indices of the frequencies to find the integral, and the numerator has a smaller range of frequencies. The reason for that is not only unclear, but baffling.
+			</p>
+		</p>
+
+	</div>
+
+	<hr>
+	<div>
+		<h1>The Graphic User Interface</h1>
+
+		<p>
+			So far, we haven't done anything original. We just replicated the results of last year's research. Here is where we make the jump from tasks <i>designed</i> to elicit cognitive load to tasks that a person is likely to encounter when using poorly-designed software or hardware. Instead of looking for websites that might be challenging to use, we created our own, where we could manipulate the variables at will. We chose three key variables to test: <b>clutter</b>, <b>color</b>, and <b>loading time</b>.
+		</p>
+		<p>
+			Our mock website was designed and built by Kylie Bach and Daniel Bielin. It mimics an ecommerce site like Amazon or eBay, providing the user five options to add to a cart and purchase. The user can verify their cart and then check out. In data collection, the subject will be told a random set of items to purchase.
+		</p>
+		<img src='images/p1.png' width='650'><br>
+		<a href='https://kyliebach.github.io/' target='_blank'>Try it here!</a><br>
+		<p>
+			Very simple. To test loading time, we included a loading screen between each action for 0, 1 (control), 2.5, or 5 seconds. To test clutter, we included a pop-up to be accepted after every action. To test color, we included a dark mode option. The clutter and color options had a one-second loading time. Martin Bourdev and Daniel Bielin were the subjects this time.
+		</p>
+		<br>
+		<i>Martin's Relative PSD</i><br>
+		<img src='images/martin_relativepsd.png' width='500'><br>
+		<br>
+		<i>Daniel's Relative PSD</i><br>
+		<img src='images/daniel_relativepsd.png'width='500'><br>
+
+		<p>
+			Unfortunately, our results are not so clear. If we go by the Human Benchmark data, a relative theta power of about 0.1 would indicate cognitive load and differentiate the rest from memory tasks. In this each case, one of the rest trials would fall clear in the cognitive load territory and in the middle of the other tasks.
+		</p>
+		<p>
+			Not only that, we would at least expect longer loading times to result in more cognitive load. From this test, there is no such trend.
+		</p>
+		<p>
+			This could be the case for multiple reasons. We were familiar with the mock website and the purpose of the experiment, which could influence how we respond to the cognitive load. If we were attempting to order real items from a real website, we may have been more frustrated by the task. The design of the website itself may also be too short and predictable. Perhaps a longer task with more random loading times would mimic a real-life experience better.
+		</p>
+	</div>
+	<hr>
+	<div>
+		<h1>Figures</h1>
+
+		<br>
+		<i>Data Flow Diagram</i><br>
+		<img src='images/data_flow.png'width='500'><br>
+
+		<br>
+		<i>Data Processing Pipeline</i><br>
+		<img src='images/data_processing.png'width='500'><br>
+
+		<br>
+		<i>GUI Flowchart</i><br>
+		<img src='images/gui.png'width='500'><br>
+
+		<br>
+		<i>Poster</i><br>
+		<img src='images/thetaflow_poster.png'width='650'><br>
+	</div>
+
+	<hr>
+	<div>
+		<h1>Photos</h1>
+		<img src='images/IMG_4683.png' width='450'>
+		<img src='images/IMG_5117-preview.png' width='450'>
+		<img src='images/IMG_8462-preview.png' width='450'><br>
+	</div>
+
+	<hr>
+	<div>
+		<h1>Acknowledgements</h1>
+		<p>Thank you to everyone on our team: Martin Bourdev, Akshyae Singh, Amanda Dankberg, Adelyne Tran, Kyra Sunil, Daniel Bielin, and Kylie Bach. Thank you to everyone at CruX UCLA, especially Soulaimane Bentaleb, Daniel Hong, Darren Vawter, Payton Bechefsky, Bill Wu, and Dr. William Speier.
+	</div>
+
+</body>
+
+
+
+
+
+
+
+
+
+
