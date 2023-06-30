@@ -1,2 +1,72 @@
 
-<p> test </p>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Set</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /> 
+</head>
+
+<body>
+	<h1>Set!</h1>
+	
+	<p>
+		The hit game of Set digitized! <a href='https://github.com/mxrtin-beep/set' target='_blank'>Take a look</a> for yourself.
+
+		Here is what a board looks like.<br>
+
+		<img src='images/set1.png' width='700'><br>
+
+		<h2>The Rules</h2>
+		There are 12 cards on the field. Each has four traits:
+		<ul>
+			<li>Color: Red, Green, or Purple</li>
+			<li>Shape: Diamond, Oval, or Squiggle</li>
+			<li>Number: One, Two, or Three</li>
+			<li>Filling: Solid, Shaded, or White</li>
+		</ul>
+
+		<h2>Sets</h2>
+		A <b>set</b> is made of three cards where each of the traits are all the same or all different. Your goal is to find as many sets as possible. You can select cards by clicking them. The image above shows a highlighted set. This set has one shared trait (color: red) and three differing traits. <br>
+		To call a set for your player or team, type a number. Typing '1' will allocate the points to player 1 and refill the table with cards from the deck until the deck runs out.<br>
+		Players can also type 'u' to deselect the cards, 'm' to shuffle the cards on the screen, and 'r' to start a new game.<br>
+		Pretty simple, right?<br>
+
+		In fact, this game of set supports two more combinations of cards to find. Once finding sets becomes easy, challenge yourself with...
+
+		<hr>
+
+		<h2>Planets</h2>
+
+		If you pick two cards at random, there is exactly one card that would have the right traits to make a set with the chosen two cards. A <b>planet</b> is simply two pairs of cards that would need the same third card to make a set.
+
+		<img src='images/set4.png' width='700'><br>
+
+		Here is a particularly clear example of a planet. The two purple cards need a card with three purple diamonds with no filling: <img src='images/set5.png' width='70'> The red and green cards need the same thing: three purple diamonds with no filling. These four make a planet. Here is another example.<br>
+
+		<img src='images/set2.png' width='700'><br>
+
+		The two purple cards need a card with three purple squiggles with shading: <img src='images/set6.png' width='70'> The red and green cards need the same thing.<br>
+
+		Finally, if that's too easy for you, we got...
+
+		<hr>
+
+		<h2>Ghost Sets</h2>
+
+		Now, instead of picking two pairs, you need to pick three pairs. And, instead of the missing cards being the same, the missing cards <i>themselves</i> need to make a set. Check this out.<br>
+
+		<img src='images/set3.png' width='700'><br>
+
+		The red cards, purple cards, and green cards are the pairs. The red cards need <img src='images/set7.png' width='70'>. The green cards need <img src='images/set8.png' width='70'>. The purple cards need <img src='images/set9.png' width='70'>. You'll notice that these cards make a set.<br>
+		These actually make a ghost set no matter which 'pairs' you choose.
+
+		<hr>
+
+		<h2>Acknowledgements</h2>
+
+		Thank you to Anu Datar of the Harker Upper School for teaching AP Computer Science with Data Structures to prepare me for this project. Thank you to the creators of this wonderful game. Finally, thank you to Ellen Guo (Columbia University, Class of 2024) for illustrating all 81 cards.
+
+	</p>
+</body>
