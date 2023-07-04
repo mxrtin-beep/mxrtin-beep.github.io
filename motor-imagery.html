@@ -51,6 +51,53 @@
 	<p>
 		From the paper: <i>The proposed model outperforms the current state-of-the-art techniques in the BCI Competition IV-2a dataset with an accuracy of 85.38% and 70.97% for the subject-dependent and subject-independent modes, respectively.</i> The subject-dependent approach tested the model on the same subject that it trained on. The subject-independent approach trained the model on all subjects but one and tested it on the excluded subject. I have found that the latter accuracy highly depends on which is the excluded subject.
 	</p>
+
+	<p>
+		Here are the values I played with:
+
+		<ul>
+			<li>Batch Size</li>
+			<li>Normalization</li>
+			<li>Learning Rate</li>
+		</ul>
+
+		These mostly had negligible effects. I would achieve a training accuracy of 80-85% and a validation accuracy of 60-65% with normalization. Here is a typical set of results (model 2). The classes are encoded as follows:
+		<ul>
+			<li>0: Left</li>
+			<li>1: Right</li>
+			<li>2: Foot</li>
+			<li>3: Tongue</li>
+		</ul>
+
+		<br>
+
+		<img src='images/2_accuracies_10000.png' width='500'>
+		<img src='images/2_10000_confusionmatrix.png' width='500'><br>
+
+
+		I did find some oddities in my training.
+
+		<ul>
+			<li>
+				One of my models (5) instantly achieved a validation accuracy of about 75% only after a few epochs. It used a batch size of 64 and learning rate of 2e-5. I do not know how this happened and I have not been able to reproduce it.<br>
+				<img src='images/5_accuracies_3000.png' width='500'>
+				<img src='images/5_3000_confusionmatrix.png' width='500'><br>
+			</li>
+
+			<li>
+				Some of my models (9) behave abnormally, with the training accuracy matching the validation accuracy closely, even going down in the end. I do not know how the training accuracy can go down like that.<br>
+
+				<img src='images/9_accuracies_20000.png' width="500"><br>
+			</li>
+		</ul>
+	</p>
+
+	<h1>Conclusion</h1>
+
+	<p>
+		This project has not concluded yet. However, I could never reliably achieve quite the 70% accuracy of the subject-independent model. My model would hover around 65%.<br>
+		Most of the parameters I changed did not have a large effect on the results.
+	</p>
 </body>
 
 
