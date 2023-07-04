@@ -1,2 +1,61 @@
 
-<p> test </p>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>&#129504 Classifying Motor Imagery</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /> 
+</head>
+
+
+<body>
+
+	<p>
+		Link to the project: <a href="https://github.com/mxrtin-beep/eeg-transformer" target="_blank">eeg-transformer</a>
+	</p>
+	<h1>What is Motor Imagery?</h1>
+	
+	<p>
+		Motor Imagery is one of the most powerful inputs in the world of Brain-Computer Interfaces (BCI). Simply put, Motor Imagery is <i>thinking</i> of moving a certain limb, usually the left arm, right arm, legs, and maybe tongue. This represents a very natural input to a BCI device; however, the classification is not nearly as simple as other inputs such as P300 and SSVEP.
+	</p>
+	<p>
+		Transformers represent an exciting opportunity to improve classification over current methods. I attempted to emulate and modify <a href="https://github.com/Altaheri/EEG-ATCNet/tree/main" target="_blank">this paper's</a> strategy, which first employs convolutional layers to reduce the signal into a few elements, and then utilizes self-attention and temporal convolution to produce predictions. This paper uses TensorFlow. Here, I try to paraphrase the strategy into PyTorch and make it more customizable.
+	</p>
+
+	<h1>The Model</h1>
+	<img src='images/atcnet.png' width='600'>
+
+	<p>
+		This diagram shows specific numbers for the dimensions of various layers. I started by hard-coding these numbers to make a working model and later made them variable. This code can be found in model.py. Translating the code into PyTorch was a nontrivial task.
+	</p>
+
+	<h1>Data Processing</h1>
+
+	<p>
+		I used the same data as the paper, the BCI-IV-2a competition data, found <a href='https://www.bbci.de/competition/iv/#dataset2a' target="_blank">here</a>. It is four-class motor imagery data: left hand, right hand, legs, and tongue. In processing.py, I load the data and using the MNE package, extract the actual trials and their labels into training and testing data.
+	</p>
+
+	<p>
+		I attempted a few preprocessing strategies to attempt to increase model accuracy.
+		<ul>
+			<li><b>Bandpass Filter</b>: Little to no change.</li>
+			<li><b>Normalizing</b>: Possible slight improvement.</li>
+			<li><b>Augmentation</b> (Increasing the amount of data by taking windows of the original trials at 50-time-point shifts): Somehow made the model a lot worse.</li>
+			<li><b>Utilize Power Spectrum</b> instead of raw EEG data: have not tried yet. This would add another dimension, going from (Batch, Depth, N_channels, Time) to (Batch, Depth, N_channels, Frequency, Time).
+		</ul>
+	</p>
+
+	<h1>Training and Testing</h1>
+
+	<p>
+		From the paper: <i>The proposed model outperforms the current state-of-the-art techniques in the BCI Competition IV-2a dataset with an accuracy of 85.38% and 70.97% for the subject-dependent and subject-independent modes, respectively.</i> The subject-dependent approach tested the model on the same subject that it trained on. The subject-independent approach trained the model on all subjects but one and tested it on the excluded subject. I have found that the latter accuracy highly depends on which is the excluded subject.
+	</p>
+</body>
+
+
+
+
+
+
+
