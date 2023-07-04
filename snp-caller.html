@@ -1,2 +1,99 @@
 
-<p> test </p>
+
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>SNP Caller</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /> 
+</head>
+
+
+<body>
+	<h1>The SNP Caller</h1>
+	
+	<p>
+		SNP stands for Single Nucleotide Polymorphism. A SNP is when one base in a genome is inserted, deleted, or changed. A typical genomics problem is, given a set of short sequencing reads and a very long reference genome, how do you find the mutations in the genome?
+	</p>
+
+	<p>
+		This has the appearance of a simple string alignment problem, but with a few extra challenges.
+		<ol>
+			<li>The genome can be very long, over a million base pairs! How do you traverse the entire string for each sequencing read?</li>
+			<li>Aligning the read to the genome is easy if they match exactly, but what if one of the bases is changed?</li>
+			<li>Even harder, what if one of the bases is deleted or inserted? Then the rest of the bases after that mutation will be shifted.</li>
+			<li>Finally, a real-world sequencer will have some probability of error when producing reads. However, you will hopefully have a redundancy of reads for each base. Given multiple potentially disagreeing reads, how do you determine the true genome?</li>
+			<li>What if you don't have a reference genome?</li>
+		</ol>
+	</p>
+
+	<p>
+		Here's how you do it.
+	</p>
+
+	<p>
+		<ol>
+			<li>To easily find a substring in a larger string, I used a compression technique known as the Burrows-Wheeler Transform (BWT), outlined in this <a href='https://www.hpl.hp.com/techreports/Compaq-DEC/SRC-RR-124.pdf' target="_blank">paper</a>. This strategy, published in 1994 by M. Burrows and D.J. Wheeler in Palo Alto, transforms a string following these steps.
+				<ol>
+					<li>Append a $ to the end of the string.</li>
+					<li>Generate a matrix of all rotations of the string.</li>
+					<li>Sort the matrix alphabetically, with the $ coming before anything else.</li>
+					<li>Extract the last column of the matrix.</li>
+				</ol>
+				Here is a visual:<br>
+				<img src='images/bwt.png' width='500'><br>
+				The SNP caller then uses a strategy called Ferragina-Manzini Indexing to find a substring. Let's say our query is <b>aba</b>. We first look at the last letter, <b>a</b>. We find the rows of the first column that start with a: 1-4. Then, look directly across to the last column. The indices of <b>aaaa</b> in the first column correspond to <b>bba$</b> in the last column. The key here is that <i>the letters in the last column immediately follow the letters in the first column in the original string.</i> You can see in the original string, the <b>a</b>s are followed by <b>b, a, b, $</b>.<br>
+
+				<img src='images/fm1.png' width='500'><br>
+
+				Then, you hone in on the letters in the last row that correspond to your second-to-last letter, in this case <b>b</b>. You narrow your range to that letter in the first row.<br>
+
+				However, what happens if there is another <b>b</b> that we don't want to look at? What if in the original string, we had a <b>bb</b> substring. We would want to exclude the first <b>b</b> because it is followed by a <b>b</b>, not an <b>a</b>. The beauty of the Burrows-Wheeler Transform is that the order of each letter's appearance is the same in the first and last column. So, the second <b>a</b> in the first column corresponds to the second <b>a</b> in the last column. Therefore, if we wanted to exclude one of the <b>b</b>s, we would narrow our range to the 0th and 1st <b>b</b>s in the first column.<br>
+
+				So, we have so far found two <b>ba</b> substrings. We look to the last column to see if any <b>a</b>s precede them.<br>
+
+				<img src='images/fm2.png' width='500'><br>
+
+				They do! We have found two instances of an <b>aba</b> substring. To find out their index in the original string, simply keep building backwards until you reach the <b>$</b>. For example, <b>a3</b> is followed immediately by a <b>$</b>, so it appears at the very end of the string: aba<b>aba</b>$. <b>a2</b> is followed by <b>a1</b>, then <b>b1</b>, <b>a3</b>, and then <b>$</b>. Therefore, that substring of <b>aba</b> is 3 letters before the end: <b>aba</b>aba$.<br>
+
+				The figures are from this wonderful <a href='https://www.youtube.com/watch?v=DYyXgxYmSYU&ab_channel=BenLangmead' target="_blank">video</a> on the topic by Ben Langmead.<br>
+
+				Fantastic! Now we can find substrings in giant genomes. You just perform the Burrows-Wheeler Transform once, and make an array that maps the first and last columns together once, and it's quick from there.
+			</li>
+
+			<li>We can find exact matches, but what about SNPs? If there is one mismatch, the BWT won't catch it. This time, the strategy is to simply split our read into three chunks and match those chunks. If all three match, you have a perfect match and no mutation. If only some of them match, you at least have an index in the genome to look at. You can then turn the problem into a matter of comparing two short strings.</li>
+
+			<li>
+				Insertions or deletions pose a large problem. They shift the entire frame of the genome, causing most bases down the line to be incorrect. One insertion or deletion can look like 20 mutations in a row. How do you deal with that?<br>
+				The strategy that I used is to look at each SNP, adding an extra base to the read at the SNP locus, and counting the number of mismatches between the genome and the new read. Then I try two extra bases and three extra bases and so on. If adding extra increases the similarity, then there is likely a deletion in the true genome that is not present in the reference genome. The strategy is the same for finding insertions, but removes bases instead of adding them.<br>
+				The output looks like this:<br>
+				<img src='images/read.jpeg' width="500"><br>
+				In this case, out of the three chunks, the last one does not match. The algorithm then predicts an index for the third match and compares it with the genome. You can even see the SNPs underlined.
+			</li>
+
+
+			<li>
+				Finally, the last part is calling the SNP. Given a bunch of reads, <i>data</i>, we want to find the probability of a genotype. Let's say we use a biallelic model, so the only possible variants are A and B. The possible genotypes are AA, AB, and BB. We want to find <math>P(AA | data)</math>, <math>P(AB | data)</math>, and <math>P(BB | data)</math>.<br>
+
+				Using Bayes Theorem, <MATH>P(AA | data) = <mfrac>P(data|AA)P(AA)<mn>P(data)</mn></mfrac></MATH>.<br>
+
+				Generally, you know the probability of the major and minor allele within a population. For example, if 95% of people have AA, then <math>P(AA) = 0.95</math>.<br>
+				Also, <math>P(data) = P(data | AA)P(AA) + P(data | AB)P(AB) + P(data | BB)P(BB)</math>.<br>
+				That leaves <math>P(data | AA)</math>. For homozygous alleles, it's pretty easy. Let's say the probability of an error in the read is <math>e</math>. You just go through each read, and if the base is A, multiply the probability by <math>(1-e)</math>, and if the base is B, multiply the probability by <math>e</math>.<br>
+				For heterozygous alleles, such as AB, it's a little more complicated, because you don't know which of the two chromosomes the sampler read the base from. If we have chromosomes 1 and 2, and we have a 50/50 chance of reading from each one, then we have to take that into account. If our sequencer reads A, then <math>P(AB | data) = 0.5e + 0.5(1-e)</math>. The sequencer could have correctly read from the A chromosome or incorrectly read from the B chromosome. For the biallelic model it simplifies to 0.5 each time, but for more complicated models it will be less trivial.<br>
+
+				That's the last piece of the puzzle! Now we know how to find the mutations in a genome, and using those find the genotype of our subject.
+			</li>
+			<li>
+				What if we don't have a reference genome? You just ran into the de novo sequence alignment problem. There are many strategies, but the one that I have used first sorts reads based on having the largest overlap. You can make a directed graph out of this. Then, I simply find an euler path through the graph to get the genome.
+			</li>
+		</ol>
+	</p>
+</body>
+
+
+
+
+
+
