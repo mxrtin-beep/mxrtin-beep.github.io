@@ -1,0 +1,66 @@
+
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Playing with GANs</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /> 
+</head>
+
+<body>
+	<h1>Source</h1>
+	This is based on the <a href='https://www.youtube.com/watch?v=OXWvrRLzEaU&list=PLhhyoLH6IjfwIp8bZnzX8QR30TRcHO8Va&index=1&pp=iAQB&themeRefresh=1&ab_channel=AladdinPersson' target='_blank'>Generative Adversarial Networks</a> tutorial by Aladdin Persson.
+
+	<a href='https://github.com/mxrtin-beep/gan-tutorial-ap' target="_blank">My GitHub</a>.
+
+	<h1>Simple GAN</h1>
+	<p>
+		The simple GAN features two classes of networks: the Discriminator and the Generator. The Generator's job is to make an image from some noise of a certain number of dimensions--in this case, 64. The Generator passes the noise through a linear layer, leaky ReLU, linear layer, and tanh. In this network, the Generator and Discriminator flatten the image down from 28 by 28 pixels to 784.
+	</p>
+
+	<p>
+		The Discriminator's job is to tell if an image is real or fake. It takes in the flattened image and passes it through a linear layer, leaky ReLU, linear layer, and sigmoid.
+	</p>
+
+	<p>
+		We train the Discriminator and Generator separately. The Discriminator trains to max log(D(real)) + log(1 - D(G(z))). D(real) is the discriminator classifying the real image as real, and G(z) is the fake image, so D(G(z)) is the discriminator classifying the fake image as real. The Generator tries to max D(G(z)). As they train, the Discriminator gets better at telling the difference and the Generator gets better at fooling the Discriminator.
+	</p>
+	<p>
+		This is what you get. Can you tell which is real and which is fake?
+	</p>
+	<img src='images/simple_fake.png'><br>
+	<img src='images/simple_real.png'><br>
+
+	<h1>DCGAN</h1>
+
+	<p>
+		The innovation of DCGAN (Deep Convolutional GAN) is that it uses convolution, a natural choice for images. The Discriminator uses blocks of convolution, batch normalization, and leaky relu, ending with a sigmoid. The interesting part is that it uses strided convolutions, which upscale the image in terms of the number of features/channels. The Generator uses fractional-strided convolutions, which decrease the number of features over each layer but increases the dimensions. We also initialize the weights to be Gaussian with a mean of 0 and standard deviation of 0.02. 
+	</p>
+	<p>
+		Here is how the Discriminator trains. It first resizes and normalizes the images by subtracting 0.5. For each real image in each epoch, it generates noise and a fake image from it (G(z)). Then the discriminator checks out the real image (D(real)) and the fake image (D(G(z))), and a real and fake loss is generated from each. The losses are averaged and back propagation is initiated. The Generator is just trained the loss from D(G(z)).
+	</p>
+
+	<p>
+		This is what you get. Can you tell which is real and which is fake?
+	</p>
+	<img src='images/dcgan_fake.png'><br>
+	<img src='images/dcgan_real.png'><br>
+
+	<p>
+		I think this is really amazing. With very standard neural networks arranged in a clever way to train against each other, you produce authentic-looking faces. Imagine if you train longer or optimize the parameters what you could do. I leave it as an exercise to the reader.
+	</p>
+
+	<h1>WGAN</h1>
+
+	<p>
+		The WGAN has a few modifications on the DCGAN which I do not fully understand. It has a new loss function and trains the Critic (formerly called Generator) 5x more than the Discriminator. The benefits are that it is more stable and has a meaningful loss. One issue with DCGAN is that it is extremely sensitive to the hyperparamters. If you choose poorly, the model may sputter out of control and not reach a good spot. Another issue is that the loss is not particularly meaningful for tracking progress. WGAN attempts to solve these problems.
+	</p>
+
+	<p>
+		This is what I got. It doesn't seem to be as good as DCGAN with the parameters I chose.
+	</p>
+	<img src='images/wgan_fake.png'><br>
+
+	<h1>Pix2Pix</h1>
+</body>
