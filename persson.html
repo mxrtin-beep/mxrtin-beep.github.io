@@ -62,5 +62,33 @@
 	</p>
 	<img src='images/wgan_fake.png'><br>
 
+	<h1>Conditional GAN</h1>
+
+	<p>
+		This GAN simply produces output conditional on a class. This allows us to have some direction on the output instead of having it the result of some noise. Here it's not obvious (at least to me) which set is real and which is fake, but the fake one is being generated with the same classes as the real one.
+	</p>
+
+	<img src='images/cond_gan_fake.png'><br>
+	<img src='images/cond_gan_real.png'><br>
+	
 	<h1>Pix2Pix</h1>
+
+	<p>
+		<a href='https://phillipi.github.io/pix2pix/' target='_blank'>Pix2Pix</a> is different. Instead of giving the Generator noise and getting some image, you give it a certain image and get back a different one. For example, you can give it a 2-year-old's drawing of a tree, and it can give you a realistic tree. You can give it Google Maps and it can give you Google Earth. It can colorize images.
+	</p>
+	<p>
+		Pix2Pix uses conditional GANs, which generate images conditional to a certain class as opposed to any class. It also learns the loss function instead of using a manmade chosen one (binary cross-entropy). Using that outputs blurry results since it averages all plausible outputs.
+	</p>
+	<p>
+		The Generator uses a variation of U-Net. You take an image and downsample it with some convolutional layers, and then upsample it again like in DCGAN. Downsampling involves increasing the number of channels/features. Normally an image has one channel if it's black and white or three channels if it's RGB, to give you an idea of what that means. Upscaling involves the reverse. In the downscaling portion, you boil down the image into its features. In the upscaling, you learn where in the image they are and how to represent them.
+	</p>
+	<p>
+		The Discriminator, instead of taking just an image, takes in both x and y, the black-and-white image and the color image, for example. It uses something called PatchGAN, which "penalizes structure at the scale of patches." It tries to classify if N x N patches of the image are real or fake, not the whole image. This can be applied to arbitrarily-large images. Specifically, if you have 256x256 images, the output of that is an Nx1x30x30, tensor, which is a 30x30 image of patches. The paper also used a learning rate of 2e-4 and Adam solver with B1 (momentum) = 0.5 and B2 (exponential average) = 0.999.
+	</p>
+	<p>
+		The researchers tried different patch sizes. They found that 70x70 works the best, while lower values result in blur and artifacts.
+	</p>
+
+
+
 </body>
