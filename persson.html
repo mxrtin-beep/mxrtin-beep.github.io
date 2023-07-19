@@ -88,7 +88,14 @@
 	<p>
 		The researchers tried different patch sizes. They found that 70x70 works the best, while lower values result in blur and artifacts.
 	</p>
-
-
+	<p>
+		Training the model involves, for each x, y pair, creating a fake image and discriminating against both of those. Then, average the bce loss of the fake and real to train the discriminator. Training the generator involves taking the fake loss and combining it with an L1 loss of y and y_fake * l1_lambda.
+	</p>
+	<img src='images/input_0_0.png'><br>
+	<img src='images/label_1_0.png'><br>
+	<img src='images/y_gen_57_0.png'><br>
+	<p>
+		This particular network was trained to convert satellite images to simpler digital maps. As you can see, it does an okay job. It gets the general gist of it, but it's blurry and has artifacts as well.
+	</p>
 
 </body>
