@@ -10,7 +10,7 @@
 
 <body>
 	<h1>Source</h1>
-	This is based on the <a href='https://www.youtube.com/watch?v=OXWvrRLzEaU&list=PLhhyoLH6IjfwIp8bZnzX8QR30TRcHO8Va&index=1&pp=iAQB&themeRefresh=1&ab_channel=AladdinPersson' target='_blank'>Generative Adversarial Networks</a> tutorial by Aladdin Persson.
+	This is based on the <a href='https://www.youtube.com/watch?v=OXWvrRLzEaU&list=PLhhyoLH6IjfwIp8bZnzX8QR30TRcHO8Va&index=1&pp=iAQB&themeRefresh=1&ab_channel=AladdinPersson' target='_blank'>Generative Adversarial Networks</a> tutorial by Aladdin Persson. Tip: type sudo pmset disablesleep 1 into console to allow it to run while screen is closed.
 
 	<a href='https://github.com/mxrtin-beep/gan-tutorial-ap' target="_blank">My GitHub</a>.
 
@@ -98,4 +98,36 @@
 		This particular network was trained to convert satellite images to simpler digital maps. As you can see, it does an okay job. It gets the general gist of it, but it's blurry and has artifacts as well.
 	</p>
 
+	<h1>ProGAN</h1>
+
+	<p>
+		<a href='https://arxiv.org/abs/1710.10196' target='_blank'>Progressive Growing of GANs</a>. New training methodology: grow the discriminator and generator progressively by adding new layers that model increasingly fine features. The generator and discriminator are mirror images of each other that grow in sync. For example, it starts out by taking 4x4 images and the scales them to 8x8, 16x16, etc. All existing layers remain trainable throughout the process. This strategy trains several times faster than traditional GANs.
+	</p>
+	<p>
+		When they add new layers, they don't just add them directly. They add them along with a residual that skips them that gradually fades out of the model.
+	</p>
+	<p>
+		ProGAN also gives the generator this minibatch standard deviation statistic to have the generator produce more varied images. They compute the standard deviation for each feature in each spatial location in the minibatch, then average the estimates into a single value. Lastly, they replicate the value  and concatenate it to all spatial locations over the minibatch, yielding one feature map that they insert towards the end. 
+	</p>
+	<p>
+		This paper also uses PixelNorm instead of BatchNorm. They do this because GANs are prone to escalation of signal magnitudes because of unhealthy competition. Finally, it uses equalized learning rate. They simply initialize weights with a normal distribution (0, 1) and scale weights at runtime. Each layer has a normalization constant <i>c</i> that divides all weights in that layer. This attempts to make each weight uniform in dynamic range and training speed.
+	</p>
+	<p>
+		The Generator produces 512 features and gradually upsamples them to 3 (RGB) as it gets to 1024x1024. The Discriminiator is the opposite, taking in a 3x1024x1024 image and downsampling it to 512x1x1.
+	</p>
+
+	<p>
+
+		Here are the 4x4, 8x8, and 16x16 images created from the same noise.<br>
+		<img src='images/imageData4.png' width=400>	
+		<img src='images/imageData8.png' width=400>
+		<img src='images/imageData16.png' width=400>
+		<br>
+		Here are the real and fake 32x32 images.<br>
+		<img src='images/imageData32.png' width=400>
+		<img src='images/imageData32r.png' width=400>
+		<br>
+
+		The main issue is that it takes forever to train.
+	</p>
 </body>
