@@ -11,5 +11,86 @@
 	<h1>Source</h1>
 	This is based on the <a href='https://www.youtube.com/watch?v=VMj-3S1tku0&list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ&ab_channel=AndrejKarpathy' target='_blank'>Neural Networks: Zero to Hero</a> tutorial by Andrej Karpathy.
 
-	<a href='https://github.com/mxrtin-beep/karpathy' target="_blank">My GitHub</a>.
+	<a href='https://github.com/mxrtin-beep/shakespeare-gan' target="_blank">My GitHub</a>.
+
+
+	<h1>Applying GANs to text</h1>
+
+	<p>
+		GANs are used to make deep-fake images, videos, and audio. They work by training two networks in parallel. One of them is a generator, whose job it is to make generate images from random noise. The other one is the discriminator/critic, whose job it is to correctly tell if an image/video/audio is real or fake. The generator tries to fool the discriminator, and the discriminator tries to not get fooled. You end up with a generator that is really good at producing images.
+	</p>
+
+	<p>
+		As far as I know, people have not explored using GANs for text. We already have ways to make models really dwell on text in the form of transformers and generate convincing text. Can we make a discriminator to tell if a string of text is real or not? This project tries to answer that question.
+	</p>
+
+	<h1>The Competition</h1>
+
+	<p>
+		We are comparing the text our model generates to that of Andrei Karpathy in his fantastic series. Initially the text looks like this, with the generated text following the '|'.
+	</p>
+
+	<p>
+		Were it not that my fellow-school-master<br>
+		Doth watch Bianca's steps so narrowly,<br>
+		'Twere good, methinks, to steal our marriage;<br>
+		|:'Sgk<br>
+		 EKvgZTwa&fTqMw$sBonco UIIm!L,wv!MpwXMS$llP$Qjmr,,MA,E:plhqp3ptsr3sUW,K;L Uz?Jum!oMUUjBp;g<br>
+		hv$r,SI$mAMx,tlfJn&?vWSL';M!leq,<br>
+	</p>
+	<br>
+	<p>
+		This is what it looks like after 50000 epochs (~7-8 hours of training on a Mac):<br>
+	</p>
+	<br>
+	<p>
+		Generated:
+		 y thee, mark me--that a brother should<br>
+		Be so perfidious!--he whom next thyself<br>
+		Of all the world I loved and to him put<br>
+		The mana|cles, and alter arm, and shall revived<br>
+		Thosest for one that migk's<br>
+		Is strumpet-players. Lend him hither: there<br>
+		This hards against<br>
+		<br>
+		Real:<br>
+		 y thee, mark me--that a brother should<br>
+		Be so perfidious!--he whom next thyself<br>
+		Of all the world I loved and to him put<br>
+		The mana|ge of my state; as at that time<br>
+		Through all the signories it was the first<br>
+		And Prospero the prime duke, being so reputed<br>
+		In dign<br>
+
+	</p>
+
+	<p>
+		This is extremely impressive, going from purely random characters to a sentence of actual English words. Still, it's hard to judge the content because of our unfamiliarity with Shakespeare's wording. Either way, this is the way that Chat GPT and other normal models work. This model calculates the loss (the function to minimize) by calculating the difference between the predicted next letters and true next letters. Let's see if GANs can give a better result.
+	</p>
+
+	<p>
+		The GAN model will train the discriminator and generator separately. The generator will generate a fake string of text. The discriminator will try to tell if it's real or fake, with an output closer to 0 being fake and output closer to 1 being real. The loss function for the generator will be the cross entropy between the discriminator's output and a list of 1s. Therefore, if the generator fools the discriminator, the discriminator will output 1s, and the loss will be low.
+	</p>
+	<p>
+		The discriminator will train in a similar way. It will make predictions on a true string and generated string. It will have a loss function for the true string (cross entropy between its output and a list of 0s) and a loss function for the generated string (cross entropy between its output and a list of 1s). The overall loss function to minimize is the average of those two.
+	</p>
+
+	<h1>The Parameters</h1>
+
+	<p>
+		batch_size = 32		(number of strings to train on at once) <br>
+		block_size = 128	(number of characters in a string to look at) <br>
+		disc_lr = 3e-4		(learning rate of discriminator) <br>
+		gen_lr = 3e-4		(learning rate of generator) <br>
+		n_embd = 384		(number of dimensions to embed characters into) <br>
+		n_head = 6			(number of self attention heads) <br>
+		head_size = n_embd // n_head	(number of blocks in a self-attention head) <br>
+		n_layer = 2			(number of layers of blocks) <br>
+		dropout = 0.2		(percent of weights to drop out) <br>
+
+	</p>
+
+
+
+
 </body>

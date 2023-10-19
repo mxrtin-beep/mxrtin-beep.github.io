@@ -130,4 +130,12 @@
 
 		The main issue is that it takes forever to train.
 	</p>
+
+	<h1>SRGAN</h1>
+
+	<p>The goal of Super-Resolution GAN <a href='https://arxiv.org/abs/1609.04802' target='_blank'>SRGAN</a> is to upscale images in resolution. The generator is made of 16 residual blocks (Conv, BachNorm, Parametric ReLU, Conv, BatchNorm, Elementwise Sum) ended with two pixel shuffle blocks. The pixel shuffle blocks can reshape the image from something like (4C, H, W) to (C, 2H, 2W) to upscale the image. You may also be able to just use normal upsampling. This strategy is interesting because it works with the low-res image for most of the net and then upscales it instead of working on the upscaled image.</p>
+
+	<p>
+		The discriminator is made of a bunch of blocks of Conv, Batch Norm, and Leaky ReLU, ending with dense layers.
+	</p>
 </body>
