@@ -28,13 +28,13 @@
 
 	The neurons on the right are action neurons, which tell the cell to perform an action if their activation reaches a certain threshold. 'MYr', 'MYf', 'MXr', and 'MXf' tell the cell to move north, south, west, and east respectively. 'Mlt', 'Mrt', 'Mrv', and 'Mfd' tell the cell to move left, right, in reverse, or forward. 'Mrn' is a random move. 'O+' and 'O-' change the rate of oscillation of the 'Osc' sensory neuron. Lastly, 'R+' and 'R-' change the responsiveness of the cell by changing the threshold for an action neuron to fire.<br><br>
 
-	Here is an example of a simulation. The selection criteria is such that any cell within a few pixels of a border will survive, and other cells will die and not reproduce. We expect that the cells will eventually all rush to the border, while cells that don't move will not reproduce. The cells in this environment reproduce asexually and do not undergo mutations to their genome. This is the simplest scenario.<br>
+	Here is an example of a simulation. The selection criteria is such that any cell on the left side of the plane will survive, and other cells will die and not reproduce. We expect that the cells will eventually all rush to the border, while cells that don't move will not reproduce. The cells in this environment reproduce asexually and do not undergo mutations to their genome. This is the simplest scenario.<br>
 
 	<video controls="controls" width="600" height="600" name="Demo">
 			<source src="images/no_mutation_1_parent.mov">
 		</video><br>
 
-	Initially, there are cells of all colors, and most of them don't move, because the connections in their brain are random. Some of those are lucky enough to spawn next to an edge. A few of the cells move and jiggle, and some move to the edges. Every generation, the cells reproduce and move to a random location. Eventually, the only cells that survive are those that move to the edge in a majority of situations. Toward the end, only cells with the pink, ligth blue, and dark blue genomes survive. <br>
+	Initially, there are cells of all colors, and most of them don't move, because the connections in their brain are random. Some of those are lucky enough to spawn on the left. A few of the cells move and jiggle, and some move to the left edge. Every generation, the cells reproduce and move to a random location. Eventually, the only cells that survive are those that move to the edge in a majority of situations. Toward the end, only cells with the pink, ligth blue, and dark blue genomes survive. <br>
 
 	Since there are no mutations and no sexual reproduction, the only genomes possible are those at the start. Some of those cells were lucky enough to have a genome that let them move to the edge in a majority of cases, but it's possible for a seed of cells to lack those critical genes and die out.<br>
 
@@ -52,7 +52,7 @@
 
 	<hr>
 
-	This setup is the same as the first one, but with a mutation rate of 0.5% per nucleotide.<br>
+	This setup is the same as the first simulation, but with a mutation rate of 0.5% per nucleotide.<br>
 	<video controls="controls" width="600" height="600" name="Demo">
 			<source src="images/evolution_rec_3.mov">
 		</video><br>
@@ -60,5 +60,33 @@
 
 	Since there are 10 genes, you see more complex behavior, where cells may move to the left and survive, but may have a connection that prevents them from moving left in certain situations. You can see the genetic diversity plummets to almost zero. The ones that reliably make it to the edges reproduce, and therefore end up making the entire gene pool. Then the diversity increases again as mutations build up.<br>
 
+	<hr>
 
+	Here is the same setup as the first simulation, with 10 genes/connections and no mutations, but with 2 parents instead of 1.<br>
+	<video controls="controls" width="600" height="600" name="Demo">
+			<source src="images/evolution_rec_4.mov">
+		</video><br>
+	<img src='images/stats4.png' width='600'><br>
+
+	The survival rate (red) gets to 100% by generation 30, which is expected. However, the genetic diversity (blue) does not plummet to zero like in the situation with 1 parent. In this case, if there is a gene from Bs to MXr, it will spread quickly through the population, and more of the starting genomes will be preserved. Many of the stationary cells that luckily started on the left mated with the fit cells and passed on some of their genes.<br>
+
+	Here is the same setup. However, in this case, the dominant genome seems to make the speed of leftward movement depend on the y position of the cells. The cells that start on top move too slowly and die, but the cells on the bottom replenish the population. Since there are no mutations, the population will remian in this situation.<br>
+
+	<video controls="controls" width="600" height="600" name="Demo">
+			<source src="images/evolution_rec_5.mov">
+		</video><br>
+
+	<hr>
+
+	Let's make things more complicated. In this case, there are 200 cells in a 400x400 environment. They each have 15 genes and 15 connections, 2 parents, and a 0.5% mutation rate. The challenge is that the selection criteria demands that cells have at least 2 neighbors within a radius of 2 tiles. If that was it, the cells would just clump at the edges. However, the cells will also die if they are within 2 pixels of an edge. This is one way that they overcome it. Most of the time the colony would die or the cells would all move to one edge and deal with a poor survival rate (10-20%). These cells achieved a survival rate of about 60%.<br>
+
+	<video controls="controls" width="600" height="600" name="Demo">
+			<source src="images/evolution_rec_6.mov">
+		</video><br>
+
+	This is another strategy that the cells found.<br>
+	<video controls="controls" width="600" height="600" name="Demo">
+			<source src="images/evolution_rec_8.mov">
+		</video><br>
+	<img src='images/stats_7.png' width='600'><br>
 </body>
