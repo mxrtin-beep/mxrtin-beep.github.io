@@ -1,0 +1,64 @@
+
+
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Evolution Simulator</title>
+	<link rel="stylesheet" type="text/css" href="style.css" /> 
+</head>
+
+
+<body>
+	<a href='https://github.com/mxrtin-beep/evolution-sim' target="_blank">GitHub</a><br>
+	<a href='https://www.youtube.com/watch?v=N3tRFayqVtk&t=2551s' target="_blank">Inspiration (YouTube)</a><br>
+
+
+	The aim of this project is to create a simulation for the evolution of cells in a 2D plane. The cells all have brains with hard-coded neurons and randomly-generated genomes that encode connections between neurons. The cells inhabit an environment with some selection criteria.<br>
+
+	Here is an example of the environment. Cells are represented by pixels. The pixel colors are encoded by genomes and represent genetic. diversity.<br>
+	<img src='images/environment.png' width='400'><br>
+
+	Here is an example of a brain. The neurons are hard-coded, but the connections and weights are genetically-encoded. Each gene encodes for a connection. This cell has 10 genes.<br>
+	<img src='images/brain.png' width='600'><br>
+	The neurons on the left are sensory neurons, which get an activation between -1 and 1 depending on the environment around the cells. 'Bs' is a bias neuron that is always on. 'BD' senses the nearest border. 'Ly' and 'Lx' sense the x and y locations. 'Gen' senses the genetic similarity of the forward neighbor. 'LMx' and 'LMy' sense the last x and y movements. 'Pop' senses the population density of the area around the cell. 'Bfd' senses if the forward path is blocked. 'Osc' oscillates from -1 to 1. 'Blr' senses the blockage to the left and right. 'Rnd' is a random input. 'Age' depends on the age of the cell. <br><br>
+
+	The neurons in the middle are inner neurons, which can point to each other or action neurons. <br><br>
+
+	The neurons on the right are action neurons, which tell the cell to perform an action if their activation reaches a certain threshold. 'MYr', 'MYf', 'MXr', and 'MXf' tell the cell to move north, south, west, and east respectively. 'Mlt', 'Mrt', 'Mrv', and 'Mfd' tell the cell to move left, right, in reverse, or forward. 'Mrn' is a random move. 'O+' and 'O-' change the rate of oscillation of the 'Osc' sensory neuron. Lastly, 'R+' and 'R-' change the responsiveness of the cell by changing the threshold for an action neuron to fire.<br><br>
+
+	Here is an example of a simulation. The selection criteria is such that any cell within a few pixels of a border will survive, and other cells will die and not reproduce. We expect that the cells will eventually all rush to the border, while cells that don't move will not reproduce. The cells in this environment reproduce asexually and do not undergo mutations to their genome. This is the simplest scenario.<br>
+
+	<video controls="controls" width="600" height="600" name="Demo">
+			<source src="images/no_mutation_1_parent.mov">
+		</video><br>
+
+	Initially, there are cells of all colors, and most of them don't move, because the connections in their brain are random. Some of those are lucky enough to spawn next to an edge. A few of the cells move and jiggle, and some move to the edges. Every generation, the cells reproduce and move to a random location. Eventually, the only cells that survive are those that move to the edge in a majority of situations. Toward the end, only cells with the pink, ligth blue, and dark blue genomes survive. <br>
+
+	Since there are no mutations and no sexual reproduction, the only genomes possible are those at the start. Some of those cells were lucky enough to have a genome that let them move to the edge in a majority of cases, but it's possible for a seed of cells to lack those critical genes and die out.<br>
+
+	Here are the statistics.<br>
+	<img src='images/no_mutation_1_parent_stats.png' width='400'><br>
+
+	<br><br><br>
+	Here is the same thing, but with 3 genes instead of 10.<br>
+	<video controls="controls" width="600" height="600" name="Demo">
+			<source src="images/evolution_rec_2.mov">
+		</video><br>
+
+	Here is the only surviving genome at the end. It has a connection from Bias (always 1) to MXr (move west). The other two connections don't do anything. The 100 starting cells were very lucky to have this randomly-generated genome among them. <br>
+	<img src='images/brain2.png' width='600'><br>
+
+	<hr>
+
+	This setup is the same as the first one, but with a mutation rate of 0.5% per nucleotide.<br>
+	<video controls="controls" width="600" height="600" name="Demo">
+			<source src="images/evolution_rec_3.mov">
+		</video><br>
+	<img src='images/stats3.png' width='600'><br>
+
+	Since there are 10 genes, you see more complex behavior, where cells may move to the left and survive, but may have a connection that prevents them from moving left in certain situations. You can see the genetic diversity plummets to almost zero. The ones that reliably make it to the edges reproduce, and therefore end up making the entire gene pool. Then the diversity increases again as mutations build up.<br>
+
+
+</body>
