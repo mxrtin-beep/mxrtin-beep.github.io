@@ -32,5 +32,37 @@
 		</video>
 	</p>
 
+	<hr>
+
+	<h1>Current Progress</h1>
+
+	<p>
+		The project, now called <b>FingerWorks</b>, has grown from a proof of concept into a full hand-tracking control system with a packaged Windows build (<a href='https://github.com/mxrtin-beep/finger-works/releases/latest' target='_blank'>latest release</a>) that runs with no Python install needed.
+	</p>
+
+	<h2>Gestures</h2>
+	<ul>
+		<li>✋ Move your right hand → moves the cursor (follows the middle finger)</li>
+		<li>🤏 Pinch right thumb + index → left click (hold to drag)</li>
+		<li>🤏 Pinch right thumb + ring → right click</li>
+		<li>✊ Close your right hand into a fist → toggle the on-screen keyboard</li>
+		<li>🤙 "Hang Ten" sign with your right hand → pause tracking</li>
+		<li>✋ Open left palm → zoom in, ✊ left fist → zoom out</li>
+		<li>☝️ Left index finger up → scroll up, 👎 left thumb down → scroll down</li>
+	</ul>
+
+	<h2>Features</h2>
+	<ul>
+		<li>A small always-on-screen control bar (Pause, Help, Settings, Quit) so you never need a gesture or the command line just to pause or quit</li>
+		<li>A full on-screen keyboard laid out like a phone keyboard, including Shift/Caps, Undo/Redo, Select All, clipboard keys, and a symbols page</li>
+		<li>A Settings window for camera selection, debug mode, and feel-tuning sliders: mouse sensitivity, cursor snappiness, scroll speed, and keyboard size, plus optional click/keystroke sound feedback</li>
+		<li>Two independent smoothing layers between your fingertip and the cursor, so small precise movements and large fast ones can each be tuned separately</li>
+		<li>Debug mode with a live camera feed, hand-tracking overlay, and diagnostic text for troubleshooting gestures</li>
+		<li>Per-frame error handling so a camera or tracking hiccup no longer crashes the whole program</li>
+	</ul>
+
+	<p>
+		Source and full documentation are on <a href='https://github.com/mxrtin-beep/finger-works' target='_blank'>GitHub</a>.
+	</p>
 
 </body>
