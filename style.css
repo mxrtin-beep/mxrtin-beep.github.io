@@ -45,6 +45,7 @@ body > h1:first-of-type {
 	font-size: 32px;
 	border-bottom: none;
 	padding-bottom: 0;
+	text-align: center;
 }
 
 h2 {
@@ -62,6 +63,7 @@ h2 {
 p {
 	margin: 0 0 16px;
 	color: var(--black);
+	text-align: justify;
 }
 
 a {
@@ -104,7 +106,7 @@ b, strong {
 img[src*="profile"] {
 	display: block;
 	border: 3px solid var(--black);
-	margin: 4px 0 24px;
+	margin: 4px auto 24px;
 }
 
 /* Link/nav list at the top of the homepage */
@@ -113,6 +115,7 @@ ul:has(> a) {
 	padding-left: 0;
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: center;
 	gap: 10px 18px;
 }
 
@@ -121,16 +124,15 @@ ul:has(> a) li {
 }
 
 ul:has(> a) a {
+	color: #0000ee;
+	font-weight: 400;
+	text-decoration: underline;
 	border-bottom: none;
-	font-weight: 700;
-	color: var(--black);
-	padding-bottom: 2px;
-	border-bottom: 2px solid transparent;
+	padding-bottom: 0;
 }
 
 ul:has(> a) a:hover {
-	color: var(--red);
-	border-bottom-color: var(--red);
+	color: #0000ee;
 }
 
 /* Project link buttons */
