@@ -1,0 +1,411 @@
+<title>Auto Beatmapper</title>
+<meta name="description" content="A tool that turns any MP3 into a full osu! beatmap, no mapping experience required.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0a0c12;
+    --surface:#12151f;
+    --surface-2:#181c2a;
+    --line:#262c3d;
+    --text:#eef0f7;
+    --muted:#8a91a8;
+    --muted-2:#5c637a;
+    --cyan:#5dd6ff;
+    --pink:#ff5d8f;
+    --yellow:#ffd15d;
+    --purple:#a78bff;
+  }
+  :root:not([data-theme="light"]){ }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f4f5f9;
+      --surface:#ffffff;
+      --surface-2:#eceff6;
+      --line:#dde1ec;
+      --text:#12141c;
+      --muted:#565d74;
+      --muted-2:#8a91a8;
+      --cyan:#0891b2;
+      --pink:#c2255c;
+      --yellow:#a16207;
+      --purple:#6d4cd9;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f4f5f9;
+    --surface:#ffffff;
+    --surface-2:#eceff6;
+    --line:#dde1ec;
+    --text:#12141c;
+    --muted:#565d74;
+    --muted-2:#8a91a8;
+    --cyan:#0891b2;
+    --pink:#c2255c;
+    --yellow:#a16207;
+    --purple:#6d4cd9;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Manrope", system-ui, sans-serif;
+    line-height:1.6;
+    padding-inline:20px;
+  }
+  .wrap{ max-width:840px; margin:0 auto; padding-block:64px 40px; }
+
+  h1,h2,h3{ font-family:"Unbounded", system-ui, sans-serif; line-height:1.15; text-wrap:balance; margin:0; }
+  .eyebrow{
+    font-family:"JetBrains Mono", monospace;
+    font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--cyan); margin:0 0 14px;
+  }
+  p{ margin:0; color:var(--muted); max-width:62ch; }
+  a{ color:var(--cyan); }
+  code{ font-family:"JetBrains Mono", monospace; font-size:0.92em; background:var(--surface-2); padding:0.15em 0.4em; border-radius:5px; }
+
+  /* Hero */
+  .hero{ display:flex; flex-direction:column; gap:28px; padding-bottom:56px; }
+  .hero h1{ font-size:clamp(34px, 6vw, 54px); font-weight:900; }
+  .hero h1 span{ color:var(--pink); }
+  .hero p{ font-size:17px; max-width:56ch; }
+
+  .stage{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:18px;
+    overflow:hidden;
+  }
+  .stage-inner{
+    position:relative;
+    aspect-ratio:512/384;
+    border-radius:12px;
+    overflow:hidden;
+    background:
+      radial-gradient(120% 90% at 15% 10%, color-mix(in srgb, var(--pink) 12%, transparent), transparent 55%),
+      radial-gradient(120% 90% at 85% 90%, color-mix(in srgb, var(--cyan) 12%, transparent), transparent 55%),
+      var(--surface-2);
+  }
+  .stage-inner svg{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .stage-caption{
+    display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    font-family:"JetBrains Mono", monospace; font-size:11.5px; color:var(--muted-2);
+    padding:12px 4px 2px; letter-spacing:0.02em;
+  }
+  .stage-caption b{ color:var(--muted); font-weight:600; }
+
+  /* Sections */
+  section{ padding-block:52px; border-top:1px solid var(--line); }
+  .section-head{ margin-bottom:26px; max-width:60ch; }
+  .section-head h2{ font-size:clamp(24px, 3.6vw, 30px); font-weight:700; margin-bottom:10px; }
+
+  /* Primer */
+  .primer{ display:grid; grid-template-columns:1fr; gap:18px; }
+  .primer p strong{ color:var(--text); }
+
+  /* Pipeline */
+  .pipeline{ display:flex; flex-direction:column; gap:0; }
+  .step{
+    display:grid;
+    grid-template-columns:56px 1fr;
+    gap:18px;
+    padding-block:22px;
+    border-top:1px solid var(--line);
+  }
+  .step:first-child{ border-top:none; }
+  .step-num{
+    font-family:"Unbounded", system-ui;
+    font-size:22px; font-weight:700;
+    color:var(--step-color, var(--cyan));
+  }
+  .step h3{ font-size:18px; font-weight:700; margin-bottom:6px; }
+  .step p{ font-size:15px; }
+  .step:nth-child(1){ --step-color:var(--pink); }
+  .step:nth-child(2){ --step-color:var(--cyan); }
+  .step:nth-child(3){ --step-color:var(--yellow); }
+
+  /* Dials */
+  .dial-grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:14px;
+  }
+  .dial{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:16px 18px;
+  }
+  .dial b{ display:block; font-size:14px; margin-bottom:4px; }
+  .dial span{ display:block; font-size:13.5px; color:var(--muted); }
+  @media (max-width:560px){ .dial-grid{ grid-template-columns:1fr; } }
+
+  /* Report */
+  .report{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    align-items:center;
+  }
+  .report-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+  }
+  .report-card ul{ margin:10px 0 0; padding-left:18px; color:var(--muted); font-size:14.5px; }
+  .report-card li{ margin-bottom:6px; }
+  .verdicts{ display:flex; gap:8px; flex-wrap:wrap; margin-top:14px; }
+  .pill{
+    font-family:"JetBrains Mono", monospace;
+    font-size:11.5px; padding:5px 10px; border-radius:999px;
+    border:1px solid var(--line);
+  }
+  .pill.pass{ color:var(--cyan); border-color:color-mix(in srgb, var(--cyan) 40%, var(--line)); }
+  .pill.warn{ color:var(--yellow); border-color:color-mix(in srgb, var(--yellow) 40%, var(--line)); }
+  .pill.fail{ color:var(--pink); border-color:color-mix(in srgb, var(--pink) 40%, var(--line)); }
+  @media (max-width:560px){ .report{ grid-template-columns:1fr; } }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding-block:32px 8px;
+    display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    font-size:13.5px; color:var(--muted-2);
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="eyebrow">auto-beatmapper</div>
+    <h1>Turn any song into a <span>playable</span> osu! map</h1>
+    <p>Pick an MP3, turn a few dials, and get back a full beatmap set — the layout of notes a player taps along to the music. No rhythm-mapping experience needed.</p>
+
+    <div class="stage">
+      <div class="stage-inner">
+        <svg viewBox="0 0 512 384" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 260.0,191.0 L 199.0,226.0" fill="none" stroke="#ff5d8f" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 260.0,191.0 L 199.0,226.0" fill="none" stroke="#ff5d8f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="260.0" cy="191.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="199.0" cy="226.0" r="14.4" fill="#ff5d8f" opacity="0.9"/>
+        <path d="M 123.0,80.0 L 131.0,118.0 L 167.0,135.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 123.0,80.0 L 131.0,118.0 L 167.0,135.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="123.0" cy="80.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="167.0" cy="135.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 236.0,144.0 L 274.0,135.0 L 289.0,99.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 236.0,144.0 L 274.0,135.0 L 289.0,99.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="236.0" cy="144.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="289.0" cy="99.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 291.0,169.0 L 305.0,205.0 L 343.0,216.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 291.0,169.0 L 305.0,205.0 L 343.0,216.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="291.0" cy="169.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="343.0" cy="216.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 357.0,285.0 L 327.0,310.0 L 329.0,349.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 357.0,285.0 L 327.0,310.0 L 329.0,349.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="357.0" cy="285.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="329.0" cy="349.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 268.0,315.0 L 239.0,251.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 268.0,315.0 L 239.0,251.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="268.0" cy="315.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="239.0" cy="251.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 256.0,112.0 L 302.0,59.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 256.0,112.0 L 302.0,59.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="256.0" cy="112.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="302.0" cy="59.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 372.0,51.0 L 386.0,88.0 L 424.0,98.0" fill="none" stroke="#ffd15d" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 372.0,51.0 L 386.0,88.0 L 424.0,98.0" fill="none" stroke="#ffd15d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="372.0" cy="51.0" r="36.1" fill="none" stroke="#ffd15d" stroke-width="3"/>
+        <circle cx="424.0" cy="98.0" r="14.4" fill="#ffd15d" opacity="0.9"/>
+        <path d="M 271.0,220.0 L 245.0,191.0 L 206.0,195.0" fill="none" stroke="#ffd15d" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 271.0,220.0 L 245.0,191.0 L 206.0,195.0" fill="none" stroke="#ffd15d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="271.0" cy="220.0" r="36.1" fill="none" stroke="#ffd15d" stroke-width="3"/>
+        <circle cx="206.0" cy="195.0" r="14.4" fill="#ffd15d" opacity="0.9"/>
+        <path d="M 207.0,125.0 L 272.0,99.0" fill="none" stroke="#ffd15d" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 207.0,125.0 L 272.0,99.0" fill="none" stroke="#ffd15d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="207.0" cy="125.0" r="36.1" fill="none" stroke="#ffd15d" stroke-width="3"/>
+        <circle cx="272.0" cy="99.0" r="14.4" fill="#ffd15d" opacity="0.9"/>
+        <path d="M 340.0,116.0 L 351.0,153.0 L 388.0,167.0" fill="none" stroke="#a78bff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 340.0,116.0 L 351.0,153.0 L 388.0,167.0" fill="none" stroke="#a78bff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="340.0" cy="116.0" r="36.1" fill="none" stroke="#a78bff" stroke-width="3"/>
+        <circle cx="388.0" cy="167.0" r="14.4" fill="#a78bff" opacity="0.9"/>
+        <path d="M 458.0,167.0 L 413.0,113.0" fill="none" stroke="#a78bff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 458.0,167.0 L 413.0,113.0" fill="none" stroke="#a78bff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="458.0" cy="167.0" r="36.1" fill="none" stroke="#a78bff" stroke-width="3"/>
+        <circle cx="413.0" cy="113.0" r="14.4" fill="#a78bff" opacity="0.9"/>
+        <path d="M 430.0,45.0 L 367.0,75.0" fill="none" stroke="#a78bff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 430.0,45.0 L 367.0,75.0" fill="none" stroke="#a78bff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="430.0" cy="45.0" r="36.1" fill="none" stroke="#a78bff" stroke-width="3"/>
+        <circle cx="367.0" cy="75.0" r="14.4" fill="#a78bff" opacity="0.9"/>
+        <path d="M 297.0,68.0 L 259.0,76.0 L 242.0,111.0" fill="none" stroke="#a78bff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 297.0,68.0 L 259.0,76.0 L 242.0,111.0" fill="none" stroke="#a78bff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="297.0" cy="68.0" r="36.1" fill="none" stroke="#a78bff" stroke-width="3"/>
+        <circle cx="242.0" cy="111.0" r="14.4" fill="#a78bff" opacity="0.9"/>
+        <path d="M 116.0,140.0 L 109.0,210.0" fill="none" stroke="#ff5d8f" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 116.0,140.0 L 109.0,210.0" fill="none" stroke="#ff5d8f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="116.0" cy="140.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="109.0" cy="210.0" r="14.4" fill="#ff5d8f" opacity="0.9"/>
+        <path d="M 150.0,267.0 L 182.0,290.0 L 219.0,279.0" fill="none" stroke="#ff5d8f" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 150.0,267.0 L 182.0,290.0 L 219.0,279.0" fill="none" stroke="#ff5d8f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="150.0" cy="267.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="219.0" cy="279.0" r="14.4" fill="#ff5d8f" opacity="0.9"/>
+        <path d="M 278.0,241.0 L 301.0,209.0 L 289.0,172.0" fill="none" stroke="#ff5d8f" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 278.0,241.0 L 301.0,209.0 L 289.0,172.0" fill="none" stroke="#ff5d8f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="278.0" cy="241.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="289.0" cy="172.0" r="14.4" fill="#ff5d8f" opacity="0.9"/>
+        <path d="M 249.0,115.0 L 180.0,102.0" fill="none" stroke="#ff5d8f" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 249.0,115.0 L 180.0,102.0" fill="none" stroke="#ff5d8f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="249.0" cy="115.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="180.0" cy="102.0" r="14.4" fill="#ff5d8f" opacity="0.9"/>
+        <path d="M 132.0,51.0 L 118.0,120.0" fill="none" stroke="#ff5d8f" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 132.0,51.0 L 118.0,120.0" fill="none" stroke="#ff5d8f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="132.0" cy="51.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="118.0" cy="120.0" r="14.4" fill="#ff5d8f" opacity="0.9"/>
+        <path d="M 67.0,168.0 L 100.0,188.0 L 137.0,174.0" fill="none" stroke="#ff5d8f" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 67.0,168.0 L 100.0,188.0 L 137.0,174.0" fill="none" stroke="#ff5d8f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="67.0" cy="168.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="137.0" cy="174.0" r="14.4" fill="#ff5d8f" opacity="0.9"/>
+        <path d="M 192.0,217.0 L 212.0,284.0" fill="none" stroke="#ff5d8f" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 192.0,217.0 L 212.0,284.0" fill="none" stroke="#ff5d8f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="192.0" cy="217.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="212.0" cy="284.0" r="14.4" fill="#ff5d8f" opacity="0.9"/>
+        <path d="M 186.0,349.0 L 126.0,314.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 186.0,349.0 L 126.0,314.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="186.0" cy="349.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="126.0" cy="314.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 58.0,330.0 L 96.0,271.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 58.0,330.0 L 96.0,271.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="58.0" cy="330.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="96.0" cy="271.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 128.0,148.0 L 162.0,167.0 L 198.0,151.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 128.0,148.0 L 162.0,167.0 L 198.0,151.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="128.0" cy="148.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="198.0" cy="151.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 241.0,96.0 L 225.0,164.0" fill="none" stroke="#5dd6ff" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 241.0,96.0 L 225.0,164.0" fill="none" stroke="#5dd6ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="241.0" cy="96.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="225.0" cy="164.0" r="14.4" fill="#5dd6ff" opacity="0.9"/>
+        <path d="M 170.0,207.0 L 135.0,190.0 L 100.0,207.0" fill="none" stroke="#ffd15d" stroke-width="72.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.28"/>
+        <path d="M 170.0,207.0 L 135.0,190.0 L 100.0,207.0" fill="none" stroke="#ffd15d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+        <circle cx="170.0" cy="207.0" r="36.1" fill="none" stroke="#ffd15d" stroke-width="3"/>
+        <circle cx="100.0" cy="207.0" r="14.4" fill="#ffd15d" opacity="0.9"/>
+        <circle cx="375.0" cy="265.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="375.0" cy="265.0" r="5.4" fill="#ff5d8f"/>
+        <circle cx="435.0" cy="139.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="435.0" cy="139.0" r="5.4" fill="#ff5d8f"/>
+        <circle cx="317.0" cy="63.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="317.0" cy="63.0" r="5.4" fill="#ff5d8f"/>
+        <circle cx="131.0" cy="209.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="131.0" cy="209.0" r="5.4" fill="#5dd6ff"/>
+        <circle cx="54.0" cy="92.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="54.0" cy="92.0" r="5.4" fill="#5dd6ff"/>
+        <circle cx="400.0" cy="164.0" r="36.1" fill="none" stroke="#ffd15d" stroke-width="3"/>
+        <circle cx="400.0" cy="164.0" r="5.4" fill="#ffd15d"/>
+        <circle cx="173.0" cy="99.0" r="36.1" fill="none" stroke="#ff5d8f" stroke-width="3"/>
+        <circle cx="173.0" cy="99.0" r="5.4" fill="#ff5d8f"/>
+        <circle cx="83.0" cy="202.0" r="36.1" fill="none" stroke="#5dd6ff" stroke-width="3"/>
+        <circle cx="83.0" cy="202.0" r="5.4" fill="#5dd6ff"/>
+        </svg>
+      </div>
+      <div class="stage-caption">
+        <span><b>~16 seconds</b> of an actual generated map</span>
+        <span>rings = circles · ribbons = sliders · color = combo group</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="primer">
+    <div class="section-head">
+      <div class="eyebrow">for the uninitiated</div>
+      <h2>What's a beatmap, anyway?</h2>
+    </div>
+    <p><strong>osu!</strong> is a rhythm game: circles appear on screen in time with a song, and the player clicks or taps each one the instant it's "hit." A <strong>beatmap</strong> is the file that says exactly which circles appear, where on screen, and when — one is hand-built, note by note, for every song you can play. Building one well normally takes a mapper hours of manual placement and playtesting.</p>
+    <p>This tool skips that: give it an MP3, and it composes the whole layout itself — rhythm, shapes, and on-screen movement — and hands back a ready-to-play <code>.osz</code> map file.</p>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">under the hood</div>
+      <h2>From MP3 to map, in three passes</h2>
+    </div>
+    <div class="pipeline">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div>
+          <h3>Lay down circles</h3>
+          <p>BPM and beat offset are detected straight from the audio. A circle is then placed on a beat subdivision chosen by how loud and busy that instant sounds — quiet passages get sparse taps, loud ones get dense bursts — so the rhythm tracks the song's own energy instead of a fixed grid.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div>
+          <h3>Merge some circles into sliders</h3>
+          <p>Adjacent circles get combined into sliders — holds the player drags along a path, including the occasional back-and-forth "bounce" — breaking up the rhythm instead of leaving every note a single tap.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div>
+          <h3>Style it</h3>
+          <p>Every object is repositioned on screen by a set of flow rules — jump distance, curve shape, turn angle, streams vs. stacks — so the map reads as intentionally designed rather than randomly scattered. This pass can be re-run on its own for a different look without touching the rhythm.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">tunable</div>
+      <h2>Turn the dials</h2>
+      <p>Every generated map is controlled by a handful of parameters — the same song can come out chill or chaotic.</p>
+    </div>
+    <div class="dial-grid">
+      <div class="dial"><b>Intensity</b><span>How much of the song reaches the busiest circle density.</span></div>
+      <div class="dial"><b>Slider mix &amp; length</b><span>How often taps get merged into sliders, and how long those holds run.</span></div>
+      <div class="dial"><b>Jump distance</b><span>How far apart objects land on screen.</span></div>
+      <div class="dial"><b>Creativity</b><span>How tightly the styling sticks to a pattern vs. varies section to section.</span></div>
+      <div class="dial"><b>Streams &amp; stacks</b><span>How often fast runs become deliberate streams, piled or spread.</span></div>
+      <div class="dial"><b>Difficulty tiers</b><span>Insane is always built; Hard/Normal/Easy are thinned and re-styled, not just shrunk copies.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">quality check</div>
+      <h2>Does it actually feel like a real map?</h2>
+      <p>An optional report compares the generated difficulties — or a hand-mapped beatmap — side by side, then grades each one against osu!'s own ranking criteria.</p>
+    </div>
+    <div class="report">
+      <div class="report-card">
+        <b>Distributions, not single numbers</b>
+        <ul>
+          <li>Delay between objects</li>
+          <li>On-screen jump spacing</li>
+          <li>Slider length &amp; duration</li>
+          <li>Turn angles, straight/curved/chain mix</li>
+        </ul>
+      </div>
+      <div class="report-card">
+        <b>Pass / warn / fail per difficulty</b>
+        <span style="font-size:14.5px; color:var(--muted); display:block; margin-top:6px;">AR/OD/HP/CS ranges, off-screen objects, illegal overlaps, slider velocity, stream length, and more.</span>
+        <div class="verdicts">
+          <span class="pill pass">AR/OD/HP/CS — pass</span>
+          <span class="pill warn">stream length — warn</span>
+          <span class="pill fail">overlap — fail</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>auto-beatmapper — MP3 in, playable map out. <a href="https://github.com/mxrtin-beep/auto-beatmapper" target="_blank">Source on GitHub →</a></span>
+    <span>every run is seeded &amp; reproducible</span>
+  </footer>
+
+</div>
