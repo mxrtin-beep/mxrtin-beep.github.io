@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Felinni</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+
+<body>
+	<h1>🐈 Felinni</h1>
+
+	<p>
+		Felinni retroactively mines your own Apple Calendar for patterns: where
+		you've been, who you've spent time with, how consistent your habits are,
+		your travel history, and the weeks that don't look like any other week.
+		Ten years of half-forgotten calendar entries turn into a dashboard you
+		can actually poke at.
+	</p>
+
+	<p>
+		The whole thing runs locally. A small Swift/EventKit exporter pulls your
+		events into a JSON file that never leaves your machine, and a Flask
+		dashboard reads that file to build every chart and table.
+	</p>
+
+	<h1>Map</h1>
+	<p>
+		Every event with a location gets geocoded (OpenStreetMap Nominatim,
+		cached to disk) and dropped on a map, color-coded by category and sized
+		by visit count. Click a pin to see every visit, the date range, and the
+		event titles behind it.
+	</p>
+	<img src="images/felinni-map.jpg" alt="Felinni map tab showing geocoded locations across LA, color-coded by category" />
+
+	<h1>People</h1>
+	<p>
+		Attendees, a <code>People:</code> note line, or a name buried in the
+		title all get parsed out and tallied into a sortable table: hours spent
+		together, days since last seen, how long you've known them, and whether
+		the relationship is trending up or down recently.
+	</p>
+	<img src="images/felinni-people.jpg" alt="Felinni people tab ranking contacts by time spent together and recent trend" />
+
+	<h1>Habits</h1>
+	<p>
+		Pick a category and felinni lays out a GitHub-style heatmap of weekly
+		activity going back years, plus streaks, gaps, and auto-detected
+		recurring series flagged as active, slowing down, or stopped relative to
+		their own historical cadence.
+	</p>
+	<img src="images/felinni-habits.png" alt="Felinni habits tab showing a weekly activity heatmap for the Fitness category" />
+
+	<h1>Everything else</h1>
+	<p>
+		Beyond those three, the dashboard has tabs for travel (nearby cities
+		grouped into one metro area, with a neighborhood drill-down for home),
+		time & spend, seasonality, and anomalies &mdash; weeks that stand out
+		against your own baseline. It can also pull in a second calendar
+		(Google, Outlook, another Apple account) via a secret ICS link and
+		de-duplicate events that show up in both. Or skip the browser entirely
+		and query from the command line:
+	</p>
+	<pre style="background: var(--white); border: 1px solid var(--gray-light); border-radius: 8px; padding: 12px 16px; overflow-x: auto; font-size: 14px;">python cli.py --events events.json people
+python cli.py --events events.json habit --category Gym
+python cli.py --events events.json anomalies</pre>
+
+	<h1>Under the hood</h1>
+	<p>
+		Swift + EventKit for the calendar export, Python + pandas for every
+		analysis, and Flask + vanilla JS for the dashboard itself. No account,
+		no server, no data leaving your machine &mdash; the exported
+		<code>events.json</code> is the only thing the tool ever reads.
+	</p>
+
+	<p>
+		<a href="https://github.com/mxrtin-beep/felinni" target="_blank">Source on GitHub &rarr;</a>
+	</p>
+
+</body>
+</html>
