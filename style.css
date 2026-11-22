@@ -281,3 +281,7 @@ hr.soft { border-top: 1px solid var(--gray-light); margin: 40px 0 0; max-width: 
 .tile.book .thumb { aspect-ratio: auto; background: none; display: block; }
 .tile.book .thumb img { height: auto; object-fit: initial; background: none; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
 .tile.book .thumb:has(.ph) { aspect-ratio: 2 / 3; background: #ebdede; display: flex; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 32px; }
+.filters label { font-size: 14px; color: var(--gray); cursor: pointer; user-select: none; }
+.filters input { accent-color: #8a6f6f; margin-right: 4px; }
