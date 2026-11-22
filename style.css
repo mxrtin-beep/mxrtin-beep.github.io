@@ -3,8 +3,8 @@
 	--red: #c1272d;
 	--red-dark: #8f1e22;
 	--gray: #6e6e6e;
-	--gray-light: #ecd3d3;
-	--off-white: #fbeeee;
+	--gray-light: #e6d8d8;
+	--off-white: #f5eeee;
 	--white: #ffffff;
 }
 
@@ -214,7 +214,7 @@ body.site {
 .main p.lede { color: var(--gray); text-align: left; margin-bottom: 32px; }
 .main .bio { max-width: 640px; }
 .main .bio p { text-align: left; font-size: 17px; line-height: 1.75; }
-.main a { color: var(--black); border-bottom: 1px solid #c9a3a3; }
+.main a { color: var(--black); border-bottom: 1px solid #cdb5b5; }
 .main a:hover { border-bottom-color: var(--red); color: var(--red-dark); }
 .label {
 	display: block;
@@ -239,7 +239,7 @@ hr.soft { border-top: 1px solid var(--gray-light); margin: 40px 0 0; max-width: 
 	aspect-ratio: 16 / 10;
 	border-radius: 4px;
 	overflow: hidden;
-	background: #f3dcdc;
+	background: #ebdede;
 	display: flex; align-items: center; justify-content: center;
 	font-size: 56px;
 }
@@ -253,7 +253,7 @@ hr.soft { border-top: 1px solid var(--gray-light); margin: 40px 0 0; max-width: 
 .entries li { padding: 18px 0; border-bottom: 1px solid var(--gray-light); margin: 0; }
 .entries .t { font-size: 18px; }
 .entries .d { color: var(--gray); font-size: 14px; margin-top: 4px; }
-.empty { color: var(--gray); border: 1px dashed #c9a3a3; border-radius: 4px; padding: 28px; max-width: 640px; }
+.empty { color: var(--gray); border: 1px dashed #cdb5b5; border-radius: 4px; padding: 28px; max-width: 640px; }
 
 @media (max-width: 800px) {
 	.sidebar { position: static; width: auto; border-right: none; border-bottom: 1px solid var(--gray-light); padding: 20px 24px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
@@ -264,3 +264,11 @@ hr.soft { border-top: 1px solid var(--gray-light); margin: 40px 0 0; max-width: 
 	.grid, .grid.books { grid-template-columns: 1fr; }
 	.grid.books { grid-template-columns: repeat(2, 1fr); }
 }
+
+.sidebar .mark { margin-bottom: 56px; }
+.sidebar .mark img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; display: block; border: none; }
+.props { border-collapse: collapse; margin: 0 0 8px; }
+.props th { text-align: left; font-weight: 400; color: var(--gray); padding: 3px 28px 3px 0; font-size: 14px; }
+.props td { padding: 3px 0; font-size: 15px; }
+.ing { max-width: 640px; }
+.rp { max-width: 640px; text-align: left; font-size: 17px; line-height: 1.75; }
