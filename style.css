@@ -276,3 +276,8 @@ hr.soft { border-top: 1px solid var(--gray-light); margin: 40px 0 0; max-width: 
 .tile.book .thumb { background: #ebdede; }
 .tile .thumb .ph { padding: 16px; font-size: 18px; font-style: italic; text-align: center; color: var(--gray); line-height: 1.3; }
 .tile.book .thumb img { object-fit: contain; background: #ebdede; }
+/* Book covers: show each cover at its natural proportions, no letterboxing */
+.grid.books { align-items: start; }
+.tile.book .thumb { aspect-ratio: auto; background: none; display: block; }
+.tile.book .thumb img { height: auto; object-fit: initial; background: none; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+.tile.book .thumb:has(.ph) { aspect-ratio: 2 / 3; background: #ebdede; display: flex; }
