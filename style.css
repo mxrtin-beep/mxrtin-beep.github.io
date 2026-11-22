@@ -285,3 +285,6 @@ hr.soft { border-top: 1px solid var(--gray-light); margin: 40px 0 0; max-width: 
 .filters { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 0 0 32px; }
 .filters label { font-size: 14px; color: var(--gray); cursor: pointer; user-select: none; }
 .filters input { accent-color: #8a6f6f; margin-right: 4px; }
+
+.photos { display: flex; gap: 16px; margin-top: 48px; max-width: 900px; align-items: flex-start; }
+.photos img { min-width: 0; width: 100%; height: auto; border-radius: 4px; display: block; }
