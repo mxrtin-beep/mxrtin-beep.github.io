@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Projects — Martin Bourdev</title>
+	<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body class="site">
+	<aside class="sidebar">
+		<a class="mark" href="index.html"><img src="images/profile.JPG" alt="Martin Bourdev"></a>
+		<nav><a href="projects.html" class=active>projects</a><a href="books.html">books</a><a href="cooking.html">cooking</a><a href="writing.html">writing</a></nav>
+	</aside>
+	<main class="main">
+		<h1 class="title">Projects</h1>
+		<div class="filters" role="group" aria-label="Filter by category">
+			<label><input type="checkbox" value="Bioengineering"> Bioengineering</label>
+			<label><input type="checkbox" value="Brewing"> Brewing</label>
+			<label><input type="checkbox" value="Coding"> Coding</label>
+			<label><input type="checkbox" value="Neurotechnology"> Neurotechnology</label>
+		</div>
+		<div class="grid">
+		<a class="tile " data-cat="Neurotechnology" href="thetaflow.html"><div class="thumb"><img src="images/thetaflow_poster.png" alt=""></div><div class="name">ThetaFlow: Measuring Cognitive Load with EEG</div><div class="meta">Neurotechnology</div></a>
+		<a class="tile " data-cat="Neurotechnology" href="motor-imagery.html"><div class="thumb"><img src="images/atcnet.png" alt=""></div><div class="name">Classifying Motor Imagery from EEG</div><div class="meta">Neurotechnology</div></a>
+		<a class="tile " data-cat="Neurotechnology" href="spike-sorting.html"><div class="thumb"><img src="images/spike-sorting-thumb.jpg" alt=""></div><div class="name">Spike Sorting EMG Signal</div><div class="meta">Neurotechnology</div></a>
+		<a class="tile " data-cat="Neurotechnology" href="besseleth.html"><div class="thumb"><img src="images/besseleth-report.jpg" alt=""></div><div class="name">Besseleth: Industry Tracker</div><div class="meta">Neurotechnology</div></a>
+		<a class="tile " data-cat="Bioengineering" href="snp-caller.html"><div class="thumb"><img src="images/bwt.png" alt=""></div><div class="name">An Algorithm to Find Mutations in a DNA Sequence</div><div class="meta">Bioengineering</div></a>
+		<a class="tile " data-cat="Bioengineering" href="smart-knee-brace.html"><div class="thumb"><img src="images/knee1.png" alt=""></div><div class="name">A Smart Knee Brace</div><div class="meta">Bioengineering</div></a>
+		<a class="tile " data-cat="Bioengineering" href="capstone.html"><div class="thumb">📷</div><div class="name">Advancing AMD Diagnosis through Hyperspectral Imaging</div><div class="meta">Bioengineering</div></a>
+		<a class="tile " data-cat="Bioengineering" href="evo-sim.html"><div class="thumb"><img src="images/brain.png" alt=""></div><div class="name">Evolution Simulator</div><div class="meta">Bioengineering</div></a>
+		<a class="tile " data-cat="Coding" href="felinni.html"><div class="thumb"><img src="images/felinni-map.jpg" alt=""></div><div class="name">Felinni: Mining Your Own Calendar for Patterns</div><div class="meta">Coding</div></a>
+		<a class="tile " data-cat="Coding" href="set.html"><div class="thumb"><img src="images/set1.png" alt=""></div><div class="name">The Card Game of Set</div><div class="meta">Coding</div></a>
+		<a class="tile " data-cat="Coding" href="hands-free-computer.html"><div class="thumb"><img src="images/fingerworks-thumb.jpg" alt=""></div><div class="name">FingerWorks: Hands-Free Computer</div><div class="meta">Coding</div></a>
+		<a class="tile " data-cat="Coding" href="auto-beatmapper.html"><div class="thumb">🎵</div><div class="name">Auto Beatmapper: Procedurally-Generated osu! Beatmaps</div><div class="meta">Coding</div></a>
+		<a class="tile " data-cat="Brewing" href="brew.html"><div class="thumb">🍺</div><div class="name">Brewing Journal</div><div class="meta">Brewing</div></a>
+		</div>
+	</main>
+	<script src="filter.js"></script>
+</body>
+</html>
